@@ -19,6 +19,9 @@ if (NODE_ENV === 'development') {
 }
 
 // Routes
+const categoryRoutes = require('./routes/categoryRoutes.js');
+
+app.use('/api/categories', categoryRoutes);
 app.get('/', (req, res) => {
     res.send('Hello World');
 })
