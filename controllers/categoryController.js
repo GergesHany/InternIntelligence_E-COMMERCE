@@ -14,13 +14,18 @@ const createCategory = asyncHandler(async (req, res) => {
 });
 
 // @desc Get all categories
-// @route GET /api/categories
+// @route GET /api/categories?page=1&limit=5
 // @access public 
 
 const getCategories = asyncHandler(async (req, res) => {
-    const Categories = await Category.find();
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 5;
+    const skip = (page - 1) * limit;    
+
+    const Categories = await Category.find().skip(skip).limit(limit);
     res.status(200).json({
         results: Categories.length,
+        page,
         categories: Categories
     });
 });
