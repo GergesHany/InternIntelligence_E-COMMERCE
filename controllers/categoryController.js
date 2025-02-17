@@ -1,6 +1,7 @@
 const slugify = require('slugify');
 const Category = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler')
+const ApiError = require("../utils/apiError.js");
 
 // @desc Create category
 // @route POST /api/categories
@@ -35,13 +36,11 @@ const getCategories = asyncHandler(async (req, res) => {
 // @route GET /api/categories/:id
 // @access public 
 
-const getCategoryById = asyncHandler(async (req, res) => {
+const getCategoryById = asyncHandler(async (req, res, next) => {
    const id = req.params.id;
    const category = await Category.findById(id);
    if (!category) {
-     res.status(404).json({
-        message: `No category for this id ${id}`
-     });
+     return next(new ApiError(`No category for this id ${id}`, 404));
    } 
    res.status(200).json({ data: category });
 });
@@ -50,15 +49,13 @@ const getCategoryById = asyncHandler(async (req, res) => {
 // @route PUT /api/categories/:id
 // @access private 
 
-const updateCategoryById = asyncHandler(async (req, res) => {
+const updateCategoryById = asyncHandler(async (req, res, next) => {
     const id = req.params.id;
     const {name, image} = req.body;
     const slug = slugify(name, {lower: true});
     const category = await Category.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
     if (!category) {
-        res.status(404).json({
-            message: `No category for this id ${id}`
-        });
+       return next(new ApiError(`No category for this id ${id}`, 404));
     }
     res.status(200).json({ data: category });
 });
@@ -67,13 +64,11 @@ const updateCategoryById = asyncHandler(async (req, res) => {
 // @route DELETE /api/categories/:id
 // @access private 
 
-const deleteCategoryById = asyncHandler(async (req, res) => {
+const deleteCategoryById = asyncHandler(async (req, res, next) => {
     const id = req.params.id;
     const category = await Category.findByIdAndDelete(id);
     if (!category) {
-        res.status(404).json({
-            message: `No category for this id ${id}`
-        });
+       return next(new ApiError(`No category for this id ${id}`, 404));
     }
     res.status(200).json({ data: category });
 });

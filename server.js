@@ -27,6 +27,18 @@ app.get('/', (req, res) => {
 })
 
 
+// error hanling middleware 
+const ApiError = require("./utils/apiError.js");
+const globalError = require("./middleware/errorMiddleware.js");
+
+app.use('*', (req, res, next) => {
+  const message = `Can't find this route ${req.originalUrl}`;
+  next(new ApiError(message, 400));
+})
+
+app.use(globalError);
+
+
 // Database connection and server start
 const mongoose = require('mongoose');
 mongoose.connection.once("open", () => {
@@ -38,5 +50,13 @@ mongoose.connection.once("open", () => {
   
 mongoose.connection.on("error", (error) => {
     console.error("MongoDB connection error:", error);
+    process.exit(1);
+});
+
+
+// Handle rejection outside express
+process.on('unhandledRejection', (err) => {
+    console.error(`UnhandledRejection Errors: ${err.name} | ${err.message}`);
+    console.error(`Shutting down....`);
     process.exit(1);
 });
