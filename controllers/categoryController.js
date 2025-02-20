@@ -1,7 +1,7 @@
 const slugify = require('slugify');
-const Category = require('../models/categoryModel');
 const asyncHandler = require('express-async-handler')
-const ApiError = require("../utils/apiError.js");
+const Category = require('../models/categoryModel');
+const ApiError = require("../utils/apiError");
 
 // @desc Create category
 // @route POST /api/categories
@@ -37,7 +37,7 @@ const getCategories = asyncHandler(async (req, res) => {
 // @access public 
 
 const getCategoryById = asyncHandler(async (req, res, next) => {
-   const id = req.params.id;
+   const {id} = req.params;
    const category = await Category.findById(id);
    if (!category) {
      return next(new ApiError(`No category for this id ${id}`, 404));
@@ -50,7 +50,7 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 // @access private 
 
 const updateCategoryById = asyncHandler(async (req, res, next) => {
-    const id = req.params.id;
+    const {id} = req.params;
     const {name, image} = req.body;
     const slug = slugify(name, {lower: true});
     const category = await Category.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
@@ -65,7 +65,7 @@ const updateCategoryById = asyncHandler(async (req, res, next) => {
 // @access private 
 
 const deleteCategoryById = asyncHandler(async (req, res, next) => {
-    const id = req.params.id;
+    const {id} = req.params;
     const category = await Category.findByIdAndDelete(id);
     if (!category) {
        return next(new ApiError(`No category for this id ${id}`, 404));

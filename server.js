@@ -1,15 +1,18 @@
 const express = require('express');
 const dotenv = require('dotenv');
+
 dotenv.config({ path: '.env' }); // Load environment variables from .env file
 const morgan = require('morgan'); // Logger middleware to log requests to the console (development only)
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV;
+const NODE_ENV = process.env.NODE_ENV || 'development';
 
 
 // Database connection
-const connectDB = require('./config/dbConn.js');
+const mongoose = require('mongoose');
+const connectDB = require('./config/dbConn');
+
 connectDB();
 
 // middlewares
@@ -19,17 +22,21 @@ if (NODE_ENV === 'development') {
 }
 
 // Routes
-const categoryRoutes = require('./routes/categoryRoutes.js');
+const categoryRoutes = require('./routes/categoryRoutes');
+const subCategoryRoutes = require('./routes/subCategoryRoutes');
+const brandRoutes = require('./routes/brandRoutes');
 
 app.use('/api/categories', categoryRoutes);
+app.use('/api/subcategories', subCategoryRoutes);
+app.use('/api/brands', brandRoutes);
 app.get('/', (req, res) => {
     res.send('Hello World');
 })
 
 
 // error hanling middleware 
-const ApiError = require("./utils/apiError.js");
-const globalError = require("./middleware/errorMiddleware.js");
+const ApiError = require("./utils/apiError");
+const globalError = require("./middleware/errorMiddleware");
 
 app.use('*', (req, res, next) => {
   const message = `Can't find this route ${req.originalUrl}`;
@@ -40,7 +47,6 @@ app.use(globalError);
 
 
 // Database connection and server start
-const mongoose = require('mongoose');
 mongoose.connection.once("open", () => {
     console.log("MongoDB connected successfully");    
     app.listen(PORT, () => {
