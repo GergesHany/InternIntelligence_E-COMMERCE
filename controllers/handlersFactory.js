@@ -13,3 +13,20 @@ exports.deleteOne = (Model) => asyncHandler(async (req, res, next) => {
         data: `${Model.modelName} deleted successfully` 
     });
 });
+
+
+exports.updateOne = (Model) => asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const doc = await Model.findByIdAndUpdate(id, req.body, {
+        new: true,
+        runValidators: true
+    });
+
+    if (!doc) {
+        return next(new ApiError(`No ${Model.modelName} found with id ${id}`, 404));
+    }
+    
+    res.status(200).json({ 
+        data: doc
+    });
+});

@@ -55,16 +55,18 @@ const getCategoryById = asyncHandler(async (req, res, next) => {
 // @route PUT /api/categories/:id
 // @access private 
 
-const updateCategoryById = asyncHandler(async (req, res, next) => {
-    const {id} = req.params;
-    const {name, image} = req.body;
-    const slug = slugify(name, {lower: true});
-    const category = await Category.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
-    if (!category) {
-       return next(new ApiError(`No category for this id ${id}`, 404));
-    }
-    res.status(200).json({ data: category });
-});
+// const updateCategoryById = asyncHandler(async (req, res, next) => {
+//     const {id} = req.params;
+//     const {name, image} = req.body;
+//     const slug = slugify(name, {lower: true});
+//     const category = await Category.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
+//     if (!category) {
+//        return next(new ApiError(`No category for this id ${id}`, 404));
+//     }
+//     res.status(200).json({ data: category });
+// });
+
+const updateCategoryById = factory.updateOne(Category);
 
 // @desc Delete Specific Category by id
 // @route DELETE /api/categories/:id

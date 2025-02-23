@@ -58,16 +58,7 @@ const getProductById = asyncHandler(async (req, res, next) => {
 // @route PUT /api/products/:id
 // @access private
 
-const updateProductById = asyncHandler(async (req, res, next) => {
-    const {id} = req.params;
-    const product = await Product.findByIdAndUpdate(id, req.body, {new: true, runValidators: true});
-
-    if (!product) {
-        return next(new ApiError(`No product for this id ${id}`, 404));
-    }
-
-    res.status(200).json({ data: product });
-});
+const updateProductById = factory.updateOne(Product);
 
 
 // @desc Delete Specific Product by id

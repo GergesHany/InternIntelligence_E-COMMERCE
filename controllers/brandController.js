@@ -57,16 +57,7 @@ const getBrandById = asyncHandler(async (req, res, next) => {
 // @route PUT /api/brands/:id
 // @access private
 
-const updateBrandById = asyncHandler(async (req, res, next) => {
-    const {id} = req.params;
-    const {name, image} = req.body;
-    const slug = slugify(name, {lower: true});
-    const brand = await Brand.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
-    if (!brand) {
-       return next(new ApiError(`No brand for this id ${id}`, 404));
-    }
-    res.status(200).json({ data: brand });
-});
+const updateBrandById = factory.updateOne(Brand);
 
 
 // @desc Delete Specific Brand by id
@@ -74,7 +65,6 @@ const updateBrandById = asyncHandler(async (req, res, next) => {
 // @access private
 
 const deleteBrandById = factory.deleteOne(Brand);
-
 
 module.exports = {
     createBrand,
