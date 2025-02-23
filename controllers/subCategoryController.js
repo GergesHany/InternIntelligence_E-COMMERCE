@@ -1,7 +1,4 @@
-const asyncHandler = require('express-async-handler')
-const ApiError = require("../utils/apiError");
 const SubCategory = require('../models/subCategoryModel');
-const APIFeatures = require('../utils/apiFeatures');
 const factory = require('./handlersFactory');
 
 
@@ -9,12 +6,6 @@ const setCategoryIdToBody = (req, res, next) => {
     if (!req.body.category) req.body.category = req.params.categoryId;
     next();
 };
-
-// @desc Create subcategory
-// @route POST /api/subcategories
-// @access private
-
-const createSubCategory = factory.createOne(SubCategory);
 
 // Nested route
 // GET /api/v1/categories/:categoryId/subcategories
@@ -25,24 +16,19 @@ const createFilterObj = (req, res, next) => {
     next();
 };
 
+
+// @desc Create subcategory
+// @route POST /api/subcategories
+// @access private
+
+const createSubCategory = factory.createOne(SubCategory);
+
+
 // @desc Get all subcategories
 // @route GET /api/subcategories?page=1&limit=5
 // @access public
 
-const getSubCategories = asyncHandler(async (req, res) => {
-    const DocumentsCount = await SubCategory.countDocuments();
-    const features = new APIFeatures(SubCategory.find(), req.query).filter().sort().limitFields().paginate(DocumentsCount);
-    
-    const {mongooseQuery, paginationResult} = features;
-    const SubCategorys = await mongooseQuery.populate('category', 'name');
-
-    res.status(200).json({
-        success: true,
-        pagination: paginationResult,
-        count: SubCategorys.length,
-        data: SubCategorys
-    });
-});
+const getSubCategories = factory.getAll(SubCategory);
 
 
 // @desc Get Specific Subcategory by id

@@ -1,7 +1,4 @@
-const asyncHandler = require('express-async-handler')
 const Brand = require('../models/brandModel');
-const ApiError = require("../utils/apiError");
-const APIFeatures = require('../utils/apiFeatures');
 const factory = require('./handlersFactory');
 
 
@@ -16,22 +13,7 @@ const createBrand = factory.createOne(Brand);
 // @route GET /api/brands?page=1&limit=5&sort=name&fields=name,image
 // @access public
 
-const getBrands = asyncHandler(async (req, res) => {
-    // build query
-    const DocumentsCount = await Brand.countDocuments();
-    const features = new APIFeatures(Brand.find(), req.query).filter().sort().limitFields().paginate(DocumentsCount);
-    
-    // execute query
-    const {mongooseQuery, paginationResult} = features;
-    const brands = await mongooseQuery;
-
-    res.status(200).json({
-        success: true,
-        pagination: paginationResult,
-        count: brands.length,
-        data: brands
-    });
-});
+const getBrands = factory.getAll(Brand);
 
 
 // @desc Get Specific Brand by id
