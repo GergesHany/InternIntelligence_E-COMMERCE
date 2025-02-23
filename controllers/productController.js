@@ -1,4 +1,3 @@
-const slugify = require('slugify');
 const asyncHandler = require('express-async-handler')
 const Product = require('../models/productModel');
 const ApiError = require("../utils/apiError");
@@ -10,13 +9,7 @@ const factory = require('./handlersFactory');
 // @route POST /api/products
 // @access private
 
-const createProduct = asyncHandler(async (req, res) => {
-    const {title, description, quantity, price, colors, imageCover, images, category, subCategory, brand} = req.body;
-    const slug = slugify(title, {lower: true});
-    const product = await Product.create({title, slug, description, quantity, price, colors, imageCover, images, category, subCategory, brand});
-    res.status(201).json(product);
-});
-
+const createProduct = factory.createOne(Product);
 
 // @desc Get all products
 // @route GET /api/products?page=1&limit=5&keyword=keyword&sort=createdAt&fields=title,price

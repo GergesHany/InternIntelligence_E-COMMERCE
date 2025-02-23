@@ -10,12 +10,7 @@ const factory = require('./handlersFactory');
 // @route POST /api/categories
 // @access private 
 
-const createCategory = asyncHandler(async (req, res) => {
-    const {name, image} = req.body;
-    const slug = slugify(name, {lower: true});
-    const category = await Category.create({name, slug, image});
-    res.status(201).json(category);
-});
+const createCategory = factory.createOne(Category);
 
 // @desc Get all categories
 // @route GET /api/categories?page=1&limit=5
