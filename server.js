@@ -25,10 +25,12 @@ if (NODE_ENV === 'development') {
 const categoryRoutes = require('./routes/categoryRoutes');
 const subCategoryRoutes = require('./routes/subCategoryRoutes');
 const brandRoutes = require('./routes/brandRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 app.use('/api/categories', categoryRoutes);
 app.use('/api/subcategories', subCategoryRoutes);
 app.use('/api/brands', brandRoutes);
+app.use('/api/products', productRoutes);
 app.get('/', (req, res) => {
     res.send('Hello World');
 })

@@ -2,6 +2,7 @@ const slugify = require('slugify');
 const asyncHandler = require('express-async-handler')
 const ApiError = require("../utils/apiError");
 const SubCategory = require('../models/subCategoryModel');
+const APIFeatures = require('../utils/apiFeatures');
 
 
 const setCategoryIdToBody = (req, res, next) => {
@@ -34,16 +35,17 @@ const createFilterObj = (req, res, next) => {
 // @access public
 
 const getSubCategories = asyncHandler(async (req, res) => {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 5;
-    const skip = (page - 1) * limit;
-
-    const subCategories = await SubCategory.find(req.filterObj).skip(skip).limit(limit).populate('category', 'name');
+    const DocumentsCount = await SubCategory.countDocuments();
+    const features = new APIFeatures(SubCategory.find(), req.query).filter().sort().limitFields().paginate(DocumentsCount);
     
+    const {mongooseQuery, paginationResult} = features;
+    const SubCategorys = await mongooseQuery.populate('category', 'name');
+
     res.status(200).json({
-        results: subCategories.length,
-        page,
-        subcategories: subCategories
+        success: true,
+        pagination: paginationResult,
+        count: SubCategorys.length,
+        data: SubCategorys
     });
 });
 
