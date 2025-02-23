@@ -1,4 +1,3 @@
-const slugify = require('slugify');
 const asyncHandler = require('express-async-handler')
 const ApiError = require("../utils/apiError");
 const SubCategory = require('../models/subCategoryModel');
@@ -50,14 +49,7 @@ const getSubCategories = asyncHandler(async (req, res) => {
 // @route GET /api/subcategories/:id
 // @access public
 
-const getSubCategoryById = asyncHandler(async (req, res, next) => {
-   const {id} = req.params;
-   const subCategory = await SubCategory.findById(id).populate('category', 'name');
-   if (!subCategory) {
-     return next(new ApiError(`No subcategory for this id ${id}`, 404));
-   } 
-   res.status(200).json({ data: subCategory });
-});
+const getSubCategoryById = factory.getOne(SubCategory);
 
 
 // @desc Update Specific Subcategory by id

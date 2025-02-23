@@ -35,16 +35,7 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route GET /api/products/:id
 // @access public
 
-const getProductById = asyncHandler(async (req, res, next) => {
-    const {id} = req.params;
-    const product = await Product.findById(id).populate('category', 'name').populate('subCategory', 'name').populate('brand', 'name');
-
-    if (!product) {
-        return next(new ApiError(`No product for this id ${id}`, 404));
-    }
-
-    res.status(200).json({ data: product });
-});
+const getProductById = factory.getOne(Product);
 
 
 // @desc Update Specific Product by id

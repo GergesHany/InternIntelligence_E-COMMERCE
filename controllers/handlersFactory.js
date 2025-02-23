@@ -1,7 +1,5 @@
 const asyncHandler = require('express-async-handler')
 const ApiError = require("../utils/apiError");
-const APIFeatures = require('../utils/apiFeatures');
-
 
 exports.deleteOne = (Model) => asyncHandler(async (req, res, next) => {
     const { id } = req.params;
@@ -37,4 +35,18 @@ exports.createOne = (Model) => asyncHandler(async (req, res) => {
     res.status(201).json({ 
         data: doc
     }); 
+});
+
+
+exports.getOne = (Model) => asyncHandler(async (req, res, next) => {
+    const { id } = req.params;
+    const doc = await Model.findById(id);
+
+    if (!doc) {
+        return next(new ApiError(`No ${Model.modelName} found with id ${id}`, 404));
+    }
+
+    res.status(200).json({ 
+        data: doc
+    });
 });

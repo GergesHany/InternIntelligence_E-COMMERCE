@@ -38,14 +38,8 @@ const getBrands = asyncHandler(async (req, res) => {
 // @route GET /api/brands/:id
 // @access public
 
-const getBrandById = asyncHandler(async (req, res, next) => {
-   const {id} = req.params;
-   const brand = await Brand.findById(id);
-   if (!brand) {
-     return next(new ApiError(`No brand for this id ${id}`, 404));
-   } 
-   res.status(200).json({ data: brand });
-});
+const getBrandById = factory.getOne(Brand);
+
 
 // @desc Update Specific Brand by id
 // @route PUT /api/brands/:id

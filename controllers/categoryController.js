@@ -1,4 +1,3 @@
-const slugify = require('slugify');
 const asyncHandler = require('express-async-handler')
 const Category = require('../models/categoryModel');
 const ApiError = require("../utils/apiError");
@@ -37,29 +36,12 @@ const getCategories = asyncHandler(async (req, res) => {
 // @route GET /api/categories/:id
 // @access public 
 
-const getCategoryById = asyncHandler(async (req, res, next) => {
-   const {id} = req.params;
-   const category = await Category.findById(id);
-   if (!category) {
-     return next(new ApiError(`No category for this id ${id}`, 404));
-   } 
-   res.status(200).json({ data: category });
-});
+const getCategoryById = factory.getOne(Category);
+
 
 // @desc Update Specific Category by id
 // @route PUT /api/categories/:id
 // @access private 
-
-// const updateCategoryById = asyncHandler(async (req, res, next) => {
-//     const {id} = req.params;
-//     const {name, image} = req.body;
-//     const slug = slugify(name, {lower: true});
-//     const category = await Category.findByIdAndUpdate({_id: id}, {name, slug, image}, {new: true});
-//     if (!category) {
-//        return next(new ApiError(`No category for this id ${id}`, 404));
-//     }
-//     res.status(200).json({ data: category });
-// });
 
 const updateCategoryById = factory.updateOne(Category);
 
