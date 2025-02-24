@@ -7,17 +7,19 @@ const {
     getBrands,
     getBrandById,
     updateBrandById,
-    deleteBrandById
+    deleteBrandById,
+    updateBrandImage,
+    resizeImage
 } = require('../controllers/brandController');
 
 
 router.route('/')
-    .post(createBrand)
+    .post(updateBrandImage, resizeImage, createBrand)
     .get(getBrands);
 
 router.route('/:id')
     .get(getBrandById)
-    .put(updateBrandById)
-    .delete(deleteBrandById);
+    .delete(deleteBrandById)
+    .put(updateBrandImage, resizeImage, updateBrandById);
 
 module.exports = router;
