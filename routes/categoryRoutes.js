@@ -21,18 +21,41 @@ const {
 
 
 const subCategories = require('./subCategoryRoutes');
+const { 
+  protect,
+  allowedTo 
+} = require('../controllers/authController');
 
 router.use('/:categoryId/subcategories', subCategories);
 
 
 router.route('/')
               .get(getCategories)
-              .post(updateCategoryImage, resizeImage, createCategoryValidator, createCategory);
+              .post(
+                protect, 
+                allowedTo('admin', 'manager'), 
+                updateCategoryImage, 
+                resizeImage, 
+                createCategoryValidator, 
+                createCategory
+              );
 
 
 router.route('/:id')
                    .get(getCategoryValidator, getCategoryById)
-                   .delete(deleteCategoryValidator, deleteCategoryById)
-                   .put(updateCategoryImage, resizeImage, updateCategoryValidator, updateCategoryById);
+                   .delete(
+                      protect, 
+                      allowedTo('admin'), 
+                      deleteCategoryValidator, 
+                      deleteCategoryById
+                   )
+                   .put(
+                      protect, 
+                      allowedTo('admin', 'manager'), 
+                      updateCategoryImage, 
+                      resizeImage, 
+                      updateCategoryValidator, 
+                      updateCategoryById
+                  );
 
 module.exports = router;

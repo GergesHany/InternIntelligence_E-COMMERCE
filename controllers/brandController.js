@@ -6,7 +6,7 @@ const Brand = require('../models/brandModel');
 const factory = require('./handlersFactory');
 const { uploadSingleImage } = require('../middleware/uploadImageMiddleware');
 
-const updateBrandImage = uploadSingleImage('image');
+const uploadBrandImage = uploadSingleImage('image');
 
 const resizeImage = asyncHandler(async (req, res, next) => {
     if (!req.file) {
@@ -66,6 +66,6 @@ module.exports = {
     getBrandById,
     updateBrandById,
     deleteBrandById,
-    updateBrandImage,
-    resizeImage
+    resizeImage,
+    uploadBrandImage,
 }

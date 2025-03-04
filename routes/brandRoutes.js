@@ -3,23 +3,53 @@ const express = require('express');
 const router = express.Router();
 
 const {
+    getBrandValidator,
+    createBrandValidator,
+    updateBrandValidator,
+    deleteBrandValidator,
+  } = require('../utils/validators/brandValidator');
+
+const {
     createBrand,
     getBrands,
     getBrandById,
     updateBrandById,
     deleteBrandById,
-    updateBrandImage,
-    resizeImage
+    resizeImage,
+    uploadBrandImage,
 } = require('../controllers/brandController');
 
+const { 
+    protect,
+    allowedTo 
+  } = require('../controllers/authController');
 
 router.route('/')
-    .post(updateBrandImage, resizeImage, createBrand)
+    .post(
+          protect,
+          allowedTo('admin', 'manager'),
+          uploadBrandImage, 
+          resizeImage, 
+          createBrandValidator, 
+          createBrand
+        )
     .get(getBrands);
 
 router.route('/:id')
-    .get(getBrandById)
-    .delete(deleteBrandById)
-    .put(updateBrandImage, resizeImage, updateBrandById);
+    .get(getBrandValidator, getBrandById)
+    .delete(
+        protect,
+        allowedTo('admin'),
+        deleteBrandValidator, 
+        deleteBrandById
+    )
+    .put(
+         protect,
+         allowedTo('admin', 'manager'),
+         uploadBrandImage, 
+         resizeImage, 
+         updateBrandValidator, 
+         updateBrandById
+        );
 
 module.exports = router;
