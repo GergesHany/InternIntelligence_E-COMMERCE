@@ -68,7 +68,10 @@ const productSchema = new mongoose.Schema(
         },
     },
     {
-        timestamps: true
+        timestamps: true,
+        // virtual populate
+        toJSON: { virtuals: true },
+        toObject: { virtuals: true },
     }
 );    
 
@@ -79,6 +82,12 @@ productSchema.pre(/^find/, function (next) {
       select: 'name -_id',
     });
     next();
+});
+
+productSchema.virtual('reviews', {
+    ref: 'Review',
+    foreignField: 'product',
+    localField: '_id',
 });
 
 const setImageURL = (doc) => {

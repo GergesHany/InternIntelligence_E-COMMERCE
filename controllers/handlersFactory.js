@@ -39,14 +39,16 @@ exports.createOne = (Model) => asyncHandler(async (req, res) => {
 });
 
 
-exports.getOne = (Model) => asyncHandler(async (req, res, next) => {
+exports.getOne = (Model, populationOpts) => asyncHandler(async (req, res, next) => {
     const { id } = req.params;
-    const doc = await Model.findById(id);
-
+    let query = Model.findById(id);
+    if (populationOpts) {
+        query = query.populate(populationOpts);
+    }
+    const doc = await query;
     if (!doc) {
         return next(new ApiError(`No ${Model.modelName} found with id ${id}`, 404));
     }
-
     res.status(200).json({ 
         data: doc
     });

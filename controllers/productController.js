@@ -70,7 +70,7 @@ const getProducts = factory.getAll(Product, 'Products');
 // @route GET /api/products/:id
 // @access public
 
-const getProductById = factory.getOne(Product);
+const getProductById = factory.getOne(Product, "reviews");
 
 
 // @desc Update Specific Product by id

@@ -24,6 +24,12 @@ const {
     allowedTo 
   } = require('../controllers/authController');
 
+const reviewsRoutes = require('./reviewRoutes');
+
+// [PORT, GET] product reviews
+router.use('/:productId/reviews', reviewsRoutes);
+
+
 router.route('/')
     .get(getProducts)
     .post(
