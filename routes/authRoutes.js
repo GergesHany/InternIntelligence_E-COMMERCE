@@ -9,11 +9,17 @@ const {
 
 const { 
     signup,
-    login, 
+    login,
+    forgotPassword,
+    verifyPassResetCode,
+    resetPassword,
 } = require('../controllers/authController');
 
-
-router.route('/login').post(loginValidator, login);
-router.route('/signup').post(signupValidator, signup);
+  
+router.post('/signup', signupValidator, signup);
+router.post('/login', loginValidator, login);
+router.post('/forgotPassword', forgotPassword);
+router.post('/verifyResetCode', verifyPassResetCode);
+router.put('/resetPassword', resetPassword);
 
 module.exports = router;

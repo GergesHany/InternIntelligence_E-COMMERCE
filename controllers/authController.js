@@ -84,7 +84,7 @@ const allowedTo = (...roles) => asyncHandler(async (req, res, next) => {
 });
 
 // @desc    Forgot password
-// @route   POST /api/v1/auth/forgotPassword
+// @route   POST /api/auth/forgotPassword
 // @access  Public
 const forgotPassword = asyncHandler(async (req, res, next) => {
   // 1) Get user by email
@@ -128,9 +128,63 @@ const forgotPassword = asyncHandler(async (req, res, next) => {
     return next(new ApiError('There is an error in sending email', 500));
   }
 
-  res
-    .status(200)
-    .json({ status: 'Success', message: 'Reset code sent to email' });
+  res.status(200).json({ status: 'Success', message: 'Reset code sent to email' });
+});
+
+// @desc    Verify password reset code
+// @route   POST /api/auth/verifyResetCode
+// @access  Public
+
+const verifyPassResetCode = asyncHandler(async (req, res, next) => {
+  // 1) Get user based on reset code
+  const hashedResetCode = crypto
+    .createHash('sha256')
+    .update(req.body.resetCode)
+    .digest('hex');
+
+  const user = await User.findOne({
+    passwordResetCode: hashedResetCode,
+    passwordResetExpires: { $gt: Date.now() },
+  });
+  if (!user) {
+    return next(new ApiError('Reset code invalid or expired'));
+  }
+
+  // 2) Reset code valid
+  user.passwordResetVerified = true;
+  await user.save();
+
+  res.status(200).json({
+    status: 'Success',
+  });
+});
+
+// @desc    Reset password
+// @route   POST /api/auth/resetPassword
+// @access  Public
+
+const resetPassword = asyncHandler(async (req, res, next) => {
+  // 1) Get user based on email
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ApiError(`There is no user with email ${req.body.email}`, 404));
+  }
+
+  // 2) Check if reset code verified
+  if (!user.passwordResetVerified) {
+    return next(new ApiError('Reset code not verified', 400));
+  }
+
+  user.password = req.body.newPassword;
+  user.passwordResetCode = undefined;
+  user.passwordResetExpires = undefined;
+  user.passwordResetVerified = undefined;
+
+  await user.save();
+
+  // 3) if everything is ok, generate token
+  const token = createToken(user._id);
+  res.status(200).json({ token });
 });
 
 module.exports = {
@@ -139,4 +193,6 @@ module.exports = {
   protect,
   allowedTo,
   forgotPassword,
+  verifyPassResetCode,
+  resetPassword,
 }

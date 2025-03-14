@@ -2,11 +2,17 @@ const path = require('path');
 
 const express = require('express');
 const dotenv = require('dotenv');
+const cors = require('cors');
+const compression = require('compression');
 
 dotenv.config({ path: '.env' }); // Load environment variables from .env file
 const morgan = require('morgan'); // Logger middleware to log requests to the console (development only)
 
 const app = express();
+app.use(cors());
+app.options('*', cors());
+app.use(compression()); // Enable gzip compression for all responses
+
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
 

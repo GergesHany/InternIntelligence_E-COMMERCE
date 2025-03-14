@@ -9,6 +9,7 @@ const wishlistRoutes = require('./wishlistRoutes');
 const addressRoutes = require('./addressRoutes');
 const couponRoutes = require('./couponRoutes');
 const cartRoutes = require('./cartRoutes');
+const orderRoutes = require('./orderRoutes');
 
 
 const Routes = (app) => {
@@ -23,6 +24,7 @@ const Routes = (app) => {
     app.use('/api/addresses', addressRoutes);
     app.use('/api/coupons', couponRoutes);
     app.use('/api/cart', cartRoutes);
+    app.use('/api/orders', orderRoutes);
 }
 
 module.exports = Routes;
