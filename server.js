@@ -3,15 +3,33 @@ const path = require('path');
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const hpp = require('hpp');
 const compression = require('compression');
+const rateLimit = require('express-rate-limit');
+const mongoSanitize = require('express-mongo-sanitize');
+
 
 dotenv.config({ path: '.env' }); // Load environment variables from .env file
 const morgan = require('morgan'); // Logger middleware to log requests to the console (development only)
 
 const app = express();
 app.use(cors());
+
+app.use(express.json({ limit: '20kb' }));
+app.use(mongoSanitize()); // Data sanitization against NoSQL query injection
 app.options('*', cors());
 app.use(compression()); // Enable gzip compression for all responses
+app.use(hpp({whitelist: ['price', 'sold', 'quantity', 'ratingsAverage', 'ratingsQuantity',], }));
+
+
+const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 30, // limit each IP to 100 requests per windowMs
+    message: 'Too many requests from this IP, please try again later.',
+});
+
+
+app.use("/api", limiter); // Apply rate limiter middleware to all requests
 
 const PORT = process.env.PORT || 5000;
 const NODE_ENV = process.env.NODE_ENV || 'development';
@@ -24,7 +42,6 @@ const connectDB = require('./config/dbConn');
 connectDB();
 
 // middlewares
-app.use(express.json());
 app.use(express.static(path.join(__dirname, 'uploads')));
 
 if (NODE_ENV === 'development') {

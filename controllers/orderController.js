@@ -9,6 +9,7 @@ const ApiError = require('../utils/apiError');
 const Product = require('../models/productModel');
 const Cart = require('../models/cartModel');
 const Order = require('../models/orderModel');
+const User = require('../models/userModel');
 
 // @desc    create cash order
 // @route   POST /api/orders/cartId
@@ -161,5 +162,5 @@ module.exports = {
   findSpecificOrder,
   updateOrderToPaid,
   updateOrderToDelivered,
-  checkoutSession
+  checkoutSession,
 }
