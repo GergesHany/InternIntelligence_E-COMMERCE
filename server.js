@@ -12,6 +12,12 @@ const mongoSanitize = require('express-mongo-sanitize');
 dotenv.config({ path: '.env' }); // Load environment variables from .env file
 const morgan = require('morgan'); // Logger middleware to log requests to the console (development only)
 
+const mongoose = require('mongoose');
+const connectDB = require('./config/dbConn');
+
+const { webhookCheckout } = require('./controllers/orderController');
+
+
 const app = express();
 app.use(cors());
 
@@ -20,6 +26,9 @@ app.use(mongoSanitize()); // Data sanitization against NoSQL query injection
 app.options('*', cors());
 app.use(compression()); // Enable gzip compression for all responses
 app.use(hpp({whitelist: ['price', 'sold', 'quantity', 'ratingsAverage', 'ratingsQuantity',], }));
+
+// Checkout webhook
+app.post('/webhook-checkout', express.raw({ type: 'application/json' }), webhookCheckout);
 
 
 const limiter = rateLimit({
@@ -36,9 +45,6 @@ const NODE_ENV = process.env.NODE_ENV || 'development';
 
 
 // Database connection
-const mongoose = require('mongoose');
-const connectDB = require('./config/dbConn');
-
 connectDB();
 
 // middlewares
