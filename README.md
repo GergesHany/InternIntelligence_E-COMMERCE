@@ -245,9 +245,8 @@ NODE_ENV=development
 
 ## Category Routes
 
-**File:** `categoryRoutes.js
+**File:** `categoryRoutes.js`
 
-`
 - **GET** `/api/categories` Retrieve all categories.
 - **GET** `/api/categories/:id` Retrieve a specific category by ID.
 - **POST** `/api/categories` Create a new category.
